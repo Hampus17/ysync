@@ -1,10 +1,27 @@
 const io = require('socket.io-client');
+const Video = require('../components/Video');
 
-export default function() {
+module.exports = function() {
 	const socket = io.connect('localhost:3001');
+	
+	socket.on('video_paused', (time) => {
+		Video.player.pauseVideo();
+	});
 
-	function connect(username) {
-		socket.emit('new-user', { username });
+	socket.on('video_started', () => {
+		Video.player.playVideo();
+	})
+
+	function connect() {
+		socket.emit('new-user');
+	}
+
+	function startVideo() {
+		socket.emit('start-video')
+	}
+
+	function pauseVideo(currentTime) {
+		socket.emit('pause-video', currentTime);
 	}
 
 	socket.on('error', (error) => {
@@ -18,5 +35,7 @@ export default function() {
 	return {
 		connect, 
 		register, 
+		pauseVideo, 
+		startVideo,
 	};
 }

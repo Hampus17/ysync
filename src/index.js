@@ -2,11 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
 
-import player from './state/reducers';
-const store = createStore(player, applyMiddleware(thunk));
+import store from './state/store';
 
 // declare a host of the party
 // send the host timestamp every second

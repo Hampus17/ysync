@@ -18,24 +18,6 @@ class YoutubeVideo extends Component {
     this.props.dispatch(Actions.FETCH_VIDEO_HANDLE(id));
   };
 
-  // onPlayerStateChange(event) {
-  //   let playerStatus = event.data;
-
-  //   switch (playerStatus) {
-  //     case 1: // Playing
-  //       // TODO: if host: start video for party and update their time
-  //       //       else: pause video and set time to host time
-  //       break;
-  //     case 2: // Paused
-  //       // TODO: if host: paus video for party and update their time
-  //       break;
-  //     case 3: // Buffering
-  //       // TODO: when done buffer check host time and update video
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
   render() {
     return <Video 
       video={this.props.videoHandler} 

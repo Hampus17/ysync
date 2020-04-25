@@ -21,6 +21,11 @@ export const SET_PLAYER_STATE = (state) => ({
   state,
 });
 
+export const SET_YOUTUBE_PLAYER = (player) => ({
+  type: "SET_YOUTUBE_PLAYER",
+  player,
+});
+
 export const SET_CHANNEL_HANDLER = (handler) => ({
   type: "SET_CHANNEL_HANDLER",
   handler,

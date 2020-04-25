@@ -5,6 +5,7 @@ const initialState = {
   videoState: "2", // Paused
   videoHandler: '',
   channelHandler: '',
+  youtubePlayer: '',
 };
 
 export function player(state = initialState, action) {
@@ -17,6 +18,10 @@ export function player(state = initialState, action) {
     case "SET_CHANNEL_HANDLER":
       return Object.assign({}, state, {
         channelHandler: action.handler,
+      });
+    case "SET_YOUTUBE_PLAYER":
+      return Object.assign({}, state, {
+        youtubePlayer: action.player,
       });
     case "SET_VIDEO_URL":
       return Object.assign({}, state, {

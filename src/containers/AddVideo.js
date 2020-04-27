@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 
 import Input from "../components/Input";
 
-import * as Actions from "../state/actions";
-
 // TODO: import styling
 
 class AddVideo extends Component {

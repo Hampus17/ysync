@@ -7,36 +7,38 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-const clients = [];
+let clients = [];
+let host = '';
 
 io.on('connection', function (client) { // client is the one sending server.js emits
+	clients.push(client.id);
+	host = clients[0];
+	client.emit('clientID', client.id);
+	client.emit('hostID', host);
 	
 	client.on('new-user', () => {
-		clients.push(client.id);
-		console.log(`${client.id} connected`);
+		console.log(`Client: ${client.id} 	connected.`);
 	})
 
-	client.on('start-video', () => {
-		console.log("Video started by: ", client.id);
-		io.emit('video_started');
+	client.on('video-started', (id) => {
+		console.log(`Client: ${client.id} 	started the video.`);
+		io.emit('start_video');
 	});
 
-	client.on('pause-video', (currentTime) => {
-		console.log(`Video paused by: ${client.id} (at ${currentTime}s)`);
-		io.emit('video_paused', currentTime)
+	client.on('video-paused', (currentTime) => {
+		console.log(`Client: ${client.id} 	paused the video (at ${currentTime}s).`);
+		io.emit('pause_video')
 	});
-
-	//client.on('video-added', handleNewVideo);
-
-	//client.on('join', handleJoin);
 	
 	client.on('disconnect', () => {
 		let index = clients.indexOf(client.id)
-		console.log(`Client (#${client.id}) disconnected`);
+		console.log(`Client: ${client.id} 	disconnected.`);
 		if (index > -1) 
-			clients.splice(index, 1)
-
+		clients.splice(index, 1)
+		
 		client.emit('user_disconnected', client.id);
+		host = clients[0];
+		console.log(`Client: ${host} 	is host.`);
 		return clients;
 	})
 	

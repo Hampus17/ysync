@@ -4,17 +4,23 @@ import store from '../state/store';
 
 import { SET_YOUTUBE_PLAYER } from "../state/actions";
 import Socket from '../client/socket';
+
+import '../css/test.css';
+
 const socket = Socket();
 
 export let player;
 
 const Video = ({ video, channel }) => {
-
+  
   if (!video || !channel) {
     return <div>Loading...</div>
   } 
   else {
     socket.connect()
+    const clientID = socket.getClientID();
+    const hostID = socket.getHostID();
+    let playingState = socket.playingState();
 
     const loadVideo = () => {
       player = new window.YT.Player(`youtube__player#${video.id}`, {
@@ -36,32 +42,43 @@ const Video = ({ video, channel }) => {
 
     } else {
       loadVideo()
+      document.getElementById(`youtube__player#${video.id}`)
+        .addEventListener(console.log("test"));
     }
 
     const onPlayerStateChange = (event) => {
         let playerStatus = event.data;
-    
+        console.log(playingState);
+
+        playingState = socket.playingState();
+        // eslint-disable-next-line default-case
         switch (playerStatus) {
           case 1: // Playing
-            socket.startVideo();
-            // TODO: if host: start video for party and update their time
-            //       else: pause video and set time to host time
+            if (clientID === hostID && playingState === false) {
+              socket.startVideo(clientID);
+            }
+            else if (playingState === false)
+              player.pauseVideo();
             break;
+
           case 2: // Paused
-            socket.pauseVideo(player.getCurrentTime());
-            // TODO: if host: paus video for party and update their time
+            if (clientID === hostID && playingState === true) {
+              socket.pauseVideo(player.getCurrentTime());
+            }
+            else if (playingState === true)
+              player.playVideo()
             break;
+
           case 3: // Buffering
             // TODO: when done buffer check host time and update video
             break;
-          default:
-            break;
         }
       };
-
+ 
     return (
       <section className="video__info">
-        <div id={`youtube__player#${video.id}`}></div>
+        <h2>User ID = {clientID} ({(clientID === hostID) ? "HOST" : "USER"})</h2>
+        <div id={`youtube__player#${video.id}`} className="iframe"></div>
         <h1 className="youtube__video--title">Current video: {video.snippet.title}</h1>
         <img className="youtube__channel--img" src={channel.thumbnails.default.url} alt="Channel"></img>
         <h2 className="youtube__channel">{ video.snippet.channelTitle }</h2>

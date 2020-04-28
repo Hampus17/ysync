@@ -23,6 +23,7 @@ class YoutubeVideo extends Component {
       video={this.props.videoHandler} 
       videoID={this.props.videoID} 
       channel={this.props.channelHandler}
+      hostID={this.props.hostID}
     />;
   }
 };
@@ -32,7 +33,8 @@ const mapStateToProps = (state) => {
     videoID: state.videoID,
     videoURL: state.videoURL,
     videoHandler: state.videoHandler, 
-    channelHandler: state.channelHandler
+    channelHandler: state.channelHandler,
+    hostID: state.hostID
   };
 };
 

@@ -9,11 +9,13 @@ module.exports = function() {
 	
 	socket.on('pause_video', () => {
 		Video.player.pauseVideo();
+		console.log(Video.player);
 		pState = false;
 	});
 
 	socket.on('start_video', () => {
 		Video.player.playVideo();
+		console.log(Video);
 		pState = true;
 	})
 	
@@ -23,6 +25,7 @@ module.exports = function() {
 
 	socket.on('hostID', (id) => {
 		hostID = id;
+		Video.setHost(hostID);
 	});
 
 	function getClientID() { return clientID;	}
@@ -57,5 +60,6 @@ module.exports = function() {
 		getClientID,
 		getHostID,
 		playingState,
+		hostID
 	};
 }

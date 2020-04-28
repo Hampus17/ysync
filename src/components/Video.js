@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import store from '../state/store';
 
-import { SET_YOUTUBE_PLAYER } from "../state/actions";
+import { SET_YOUTUBE_PLAYER, SET_HOST_ID } from "../state/actions";
 import Socket from '../client/socket';
 
 import '../css/test.css';
@@ -10,26 +10,29 @@ import '../css/test.css';
 const socket = Socket();
 
 export let player;
+export function setHost(id) {
+  store.dispatch(SET_HOST_ID(id));
+}
 
-const Video = ({ video, channel }) => {
-  
+const Video = ({ video, channel, hostID }) => {
+
+  useEffect(() => loadVideo);
+
   if (!video || !channel) {
     return <div>Loading...</div>
   } 
   else {
     socket.connect()
     const clientID = socket.getClientID();
-    const hostID = socket.getHostID();
     let playingState = socket.playingState();
 
-    const loadVideo = () => {
+    var loadVideo = () => {
       player = new window.YT.Player(`youtube__player#${video.id}`, {
         videoId: video.id,
         events: {
           'onStateChange': onPlayerStateChange,
         },
       });
-      store.dispatch(SET_YOUTUBE_PLAYER(player));
     }
 
     if (!window.YT) {
@@ -42,14 +45,13 @@ const Video = ({ video, channel }) => {
 
     } else {
       loadVideo()
-      document.getElementById(`youtube__player#${video.id}`)
-        .addEventListener(console.log("test"));
     }
 
-    const onPlayerStateChange = (event) => {
+    var onPlayerStateChange = (event) => {
         let playerStatus = event.data;
-        console.log(playingState);
 
+        console.log(event);
+        console.log(player);
         playingState = socket.playingState();
         // eslint-disable-next-line default-case
         switch (playerStatus) {

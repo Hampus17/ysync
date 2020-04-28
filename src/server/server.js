@@ -14,7 +14,7 @@ io.on('connection', function (client) { // client is the one sending server.js e
 	clients.push(client.id);
 	host = clients[0];
 	client.emit('clientID', client.id);
-	client.emit('hostID', host);
+	io.emit('hostID', host);
 	
 	client.on('new-user', () => {
 		console.log(`Client: ${client.id} 	connected.`);
@@ -26,7 +26,7 @@ io.on('connection', function (client) { // client is the one sending server.js e
 	});
 
 	client.on('video-paused', (currentTime) => {
-		console.log(`Client: ${client.id} 	paused the video (at ${currentTime}s).`);
+		console.log(`Client: ${client.id} 	paused the video (at ${Math.floor(currentTime)}s).`);
 		io.emit('pause_video')
 	});
 	
@@ -34,10 +34,11 @@ io.on('connection', function (client) { // client is the one sending server.js e
 		let index = clients.indexOf(client.id)
 		console.log(`Client: ${client.id} 	disconnected.`);
 		if (index > -1) 
-		clients.splice(index, 1)
+			clients.splice(index, 1)
 		
 		client.emit('user_disconnected', client.id);
 		host = clients[0];
+		io.emit('hostID', host);
 		console.log(`Client: ${host} 	is host.`);
 		return clients;
 	})

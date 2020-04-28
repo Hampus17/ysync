@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import store from '../state/store';
 
-import { SET_YOUTUBE_PLAYER, SET_HOST_ID } from "../state/actions";
+import { SET_HOST_ID, SET_CLIENT_ID } from "../state/actions";
 import Socket from '../client/socket';
 
-import '../css/test.css';
+import styles from '../styles/video.module.scss';
 
 const socket = Socket();
 
@@ -24,15 +24,18 @@ const Video = ({ video, channel, hostID }) => {
   else {
     socket.connect()
     const clientID = socket.getClientID();
+    store.dispatch(SET_CLIENT_ID(clientID));
     let playingState = socket.playingState();
 
     var loadVideo = () => {
-      player = new window.YT.Player(`youtube__player#${video.id}`, {
-        videoId: video.id,
-        events: {
-          'onStateChange': onPlayerStateChange,
-        },
-      });
+      if (window.YT) {
+        player = new window.YT.Player(`youtube__player#${video.id}`, {
+          videoId: video.id,
+          events: {
+            'onStateChange': onPlayerStateChange,
+          },
+        });
+      }
     }
 
     if (!window.YT) {
@@ -50,13 +53,13 @@ const Video = ({ video, channel, hostID }) => {
     var onPlayerStateChange = (event) => {
         let playerStatus = event.data;
 
-        console.log(event);
-        console.log(player);
+        console.log(playingState)
         playingState = socket.playingState();
         // eslint-disable-next-line default-case
         switch (playerStatus) {
           case 1: // Playing
             if (clientID === hostID && playingState === false) {
+              playingState = true;
               socket.startVideo(clientID);
             }
             else if (playingState === false)
@@ -65,6 +68,7 @@ const Video = ({ video, channel, hostID }) => {
 
           case 2: // Paused
             if (clientID === hostID && playingState === true) {
+              playingState = false;
               socket.pauseVideo(player.getCurrentTime());
             }
             else if (playingState === true)
@@ -78,12 +82,14 @@ const Video = ({ video, channel, hostID }) => {
       };
  
     return (
-      <section className="video__info">
-        <h2>User ID = {clientID} ({(clientID === hostID) ? "HOST" : "USER"})</h2>
-        <div id={`youtube__player#${video.id}`} className="iframe"></div>
-        <h1 className="youtube__video--title">Current video: {video.snippet.title}</h1>
-        <img className="youtube__channel--img" src={channel.thumbnails.default.url} alt="Channel"></img>
-        <h2 className="youtube__channel">{ video.snippet.channelTitle }</h2>
+      <section className={styles.video__info}>
+        <div id={`youtube__player#${video.id}`} className={styles.iframe}></div>
+        <h1 className={styles.youtube__video_title}>{video.snippet.title}</h1>
+        <div className={styles.channel__info}>
+          <img className={styles.channel__img} src={channel.thumbnails.default.url} alt="Channel"></img>
+          <h2 className={styles.channel__name}>{ video.snippet.channelTitle }</h2>
+        </div>
+          
       </section>
     )
   }

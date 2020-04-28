@@ -21,6 +21,11 @@ export const SET_HOST_ID = (id) => ({
   id: id,
 });
 
+export const SET_CLIENT_ID = (id) => ({
+  type: "SET_CLIENT_ID",
+  id: id,
+});
+
 export const SET_PLAYER_STATE = (state) => ({
   type: "SET_PLAYER_STATE",
   state,

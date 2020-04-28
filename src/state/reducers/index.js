@@ -1,11 +1,10 @@
 const initialState = {
-  videoID: "Yuo7AuDGNN8",
   videoURL: "https://www.youtube.com/watch?v=Yuo7AuDGNN8",
   videoTime: 0,
-  videoState: "2", // Paused
   videoHandler: '',
   channelHandler: '',
-  hostID: ''
+  hostID: '',
+  clientID: ''
 };
 
 export function player(state = initialState, action) {
@@ -27,17 +26,17 @@ export function player(state = initialState, action) {
       return Object.assign({}, state, {
         videoURL: action.url,
       });
-    case "SET_VIDEO_ID":
-      return Object.assign({}, state, {
-        videoID: action.id,
-      });
     case "SET_HOST_ID":
       return Object.assign({}, state, {
         hostID: action.id,
+      });
+    case "SET_CLIENT_ID":
+      return Object.assign({}, state, {
+        clientID: action.id,
       });
     default:
       return state;
   }
 }
 
-export default player;
+export default player;     

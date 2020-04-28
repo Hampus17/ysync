@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
     videoURL: state.videoURL,
     videoHandler: state.videoHandler, 
     channelHandler: state.channelHandler,
-    hostID: state.hostID
+    hostID: state.hostID,
   };
 };
 
